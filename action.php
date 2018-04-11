@@ -33,6 +33,55 @@ class dataOperaion extends Database {
     return $array;
   }
 
+// code for selecting data using id
+public function select($table, $where){
+  $query = "";
+  $candition = "";
+  foreach ($where as $key => $value) {
+    // id = '5' and medicine_name = "kuffdryl"
+    $candition .= $key . "='" .$value ."' AND ";
+  }
+   $candition = substr($candition, 0 , -5);
+   $query .= "SELECT * FROM ".$table. " WHERE " .$candition;
+   $result = mysqli_query($this->con, $query);
+   $row = mysqli_fetch_array($result);
+   return $row;
+}
+
+// code of update function goes here...
+  public function update($table, $where, $fields){
+    $query = "";
+    $candition = "";
+    foreach ($where as $key => $value) {
+      // id = '5' and medicine_name = "kuffdryl"
+      $candition .= $key . "='" .$value ."' AND ";
+    }
+    $candition = substr($candition, 0 , -5);
+    foreach ($fields as $key => $value) {
+      // update table set medicine_name = '', quantity = '' where id = '';
+      $query .= $key . "='".$value."', ";
+    }
+    $query = substr($query, 0 , -2);
+    $query ="UPDATE ".$table." SET ".$query." WHERE ".$candition;
+    if(mysqli_query($this->con, $query)){
+      return true;
+    }
+  }
+
+  // code for deletion
+  public function delete($table, $where){
+    $query = "";
+    $candition = "";
+    foreach ($where as $key => $value) {
+    $candition .= $key . "='" .$value ."' AND ";
+    }
+    $candition = substr($candition, 0 , -5);
+    $query ="DELETE FROM ".$table." WHERE ".$candition;
+    if (mysqli_query($this->con, $query)) {
+      return true;
+    }
+  }
+
 
 }
 
@@ -48,4 +97,27 @@ class dataOperaion extends Database {
      header("location:index.php?message=Record Saved!");
    }
  }
+ //code for update goes here jus calling the update function
+ if(isset($_POST['update'])){
+   $id = $_POST["id"];
+   $where = array("id"=>$id);
+   $myArray = array(
+     "medicine_name" => strip_tags(trim($_POST['name'])),
+     "quantity" => strip_tags(trim($_POST['quantity']))
+   );
+   if ($obj->update("medicines",$where, $myArray)) {
+     header("location:index.php?msg=Updated");
+   }
+  }
+
+  //code for Delete goes here jus calling the delete function
+  if(isset($_GET['delete'])){
+    if(isset($_GET["id"])){  // check if the id id attached with url or not
+      $id = $_GET["id"];
+      $where = array("id"=>$id);
+      if ($obj->delete("medicines",$where)) {
+        header("location:index.php?msg=Deleted");
+      }
+    }
+   }
  ?>

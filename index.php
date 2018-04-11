@@ -45,11 +45,32 @@ include "action.php";
           <div class="panel panel-primary">
             <div class="panel-heading">Enter The Details here!</div>
             <div class="panel-body">
+              <?php
+                if(isset($_GET["update"])){  // sense the update link via url
+                  if(isset($_GET["id"])){  // check if the id id attached with url or not
+                    $id = $_GET["id"]; // if yes then store that in id variable and print form in 'if ' candition else print normal form
+                    $where = array("id"=>$id); // making candition as we know we use id so 'where' = id here
+                  }
+                  $row = $obj->select("medicines", $where);  //saving the data in $row variable data is comming from obj call
+                  ?>
+                  <form id="update_form" action="action.php" method="post">
+                    <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                    <input type="text" class="form-control" name="name" value="<?php echo $row['medicine_name']; ?>">
+                    <input type="text" class="form-control" name="quantity" value="<?php echo $row['quantity']; ?>">
+                    <input type="submit" class="btn btn-primary pull-right" name="update" value="Update">
+                  </form>
+              <?php
+            }else{
+              ?>
               <form class="" action="action.php" method="post">
                 <input type="text" class="form-control" name="name" placeholder="Enter the medicine name">
                 <input type="text" class="form-control" name="quantity" placeholder="Enter the Quantity">
                 <input type="submit" class="btn btn-primary pull-right" name="submit" value="Store">
               </form>
+              <?php
+            }
+                ?>
+
             </div>
           </div>
         </div>
@@ -64,11 +85,11 @@ include "action.php";
           <div class="table-responsive">
             <table class="table table-bordered">
               <tr>
-                <th>#</th>
+                <th>S No.</th>
                 <th>Medicine Name</th>
                 <th>Avaialble Stock</th>
-                <th><span class="fa fa-pencil"></span></th>
-                <th><span class="fa fa-trash"></span></th>
+                <th>Action</th>
+                <th>Action</th>
               </tr>
               <tr>
                 <?php
@@ -79,8 +100,8 @@ include "action.php";
                 <td><?php echo $row["id"]; ?></td>
                 <td><?php echo $row["medicine_name"]; ?></td>
                 <td><b><?php echo $row["quantity"]; ?></b></td>
-                <td><a href="#" class="btn btn-warning">Edit</a></td>
-                <td><a href="#" class="btn btn-danger">Delete</a></td>
+                <td><a href="index.php?update=1&id=<?php echo $row['id']; ?> " class="btn btn-warning">Edit</a></td>
+                <td><a href="index.php?delete=1&id=<?php echo $row['id']; ?>" class="btn btn-danger">Delete</a></td>
               </tr>
               <?php
                 }
@@ -91,6 +112,8 @@ include "action.php";
         <div class="col-md-2"></div>
       </div>
     </div>
-  <script src="app.js"></script>
+    <script type="text/javascript">
+
+    </script>
   </body>
 </html>
